@@ -149,7 +149,7 @@ export default function Sidebar() {
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}>
           <div>
-            <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href="dashboard" selected={selected === 'home'} onClick={() => handleClick('home')} />
+            <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href="/admin" selected={selected === 'home'} onClick={() => handleClick('home')} />
             <ListItemWithIcon IconComponent={DraftsIcon} text="Permohonan izin" href="/admin/perizinan" selected={selected === 'perizinan'} onClick={() => handleClick('perizinan')} />
             <ListItemWithIcon IconComponent={ClassRoundedIcon} text="Data Kelas" href="/admin/dataKelas" selected={selected === 'dataKelas'} onClick={() => handleClick('dataKelas')} />
           </div>

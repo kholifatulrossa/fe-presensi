@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/joy';
 import Clock from '../components/Clock';
 import { useTheme } from '@mui/joy/styles';
 import CustomTable from '../components/Table';
-import FourCard from '../components/FourCard';
+import FourCard from '../components/4card2';
 
 export const MainDash = () => {
   return (

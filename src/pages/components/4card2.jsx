@@ -17,7 +17,7 @@ const FourCard = () => {
       <Box
         sx={{
           display: 'flex',
-          width: 'auto',
+          width: '100%',
           gap: 10,
         }}>
         <Box sx={{ p: 1 }}>
@@ -134,4 +134,4 @@ const FourCard = () => {
   );
 };
 
-export default FrCard;
+export default FourCard;

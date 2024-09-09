@@ -1,37 +1,37 @@
 import React from 'react'
-import { Box, Typography } from '@mui/joy'
+import { Box, Typography, Button } from '@mui/joy'
+import Logo from '../../assets/img/logo.png'
 
 export const Perizinan = () => {
   return (
     <>
-        <Box sx={{ backgroundColor: '#f5f5ff' }}>
-          <Box sx={{ padding: '20px', maxWidth: '100vw', maxHeight: 'auto'}}>
-            <Typography
-              level="p"
-              sx={{
-                fontWeight: '500',
-                fontSize: 16,
-                color: 'black',
-                fontFamily: 'Poppins'
-              }}>
-              Selamat Datang, Admin! <br /> <span>Lorem </span>
-            </Typography>
-          </Box>
-          <Box 
-         sx={{
-          display: 'flex',
-          gap: 1,
-          flexDirection: { xs: 'column', sm: 'row' },
-          alignItems: { xs: 'start', sm: 'center' },
-          mx: 3,
-          mb: 2,
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          color: 'black',
-        }}>
-        
+        <Box sx={{ backgroundColor: '#f5f5ff', width: '100%', height: '100vh' }}>
+          <Box sx={{ p:3.5 }}>
+            <Box sx={{ p: '0 0 15px 0', gap: '18px', display: 'flex', justifyContent: 'flex-end'}}>
+              <Button sx={{ padding: '20px 40px', backgroundColor: 'white',color: '#4D91FF', fontSize: 20, fontWeight: '600', boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, 0.1)', '&:hover': { backgroundColor: '#BEBEBE', color: '#4D91FF'}}}>
+                Tambah Data
+              </Button>
+              <Button sx={{ padding: '20px 40px', backgroundColor: '#4D91FF',color: 'white', fontSize: 20, fontWeight: '600', boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, 0.1)', '&:hover': { color: 'white'}}}>
+                Accept All
+              </Button>
+            </Box>
+              <Box 
+                sx={{ backgroundColor: '#4D91FF', display: 'flex', alignItems: 'center', boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, 0.1)', width: '25%', height: 'auto', padding: '0 0 0 10px', borderRadius: '8px'}}>
+                      <Box 
+                      sx={{ display: 'flex', backgroundColor: 'white', width: '100%', height: '117px',borderRadius: '0 8px 8px 0', }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', p: 3}}><img src={Logo} alt="" style={{ width: '60px', height: 'auto' }} />
+                            <Box sx={{ pl: 3 }}>
+                              <Typography sx={{ color: 'black', fontWeight: '600', fontSize: 20, fontFamily: 'poppins' }}>Farra Azzura</Typography>
+                              <Typography sx={{ color: 'black', fontWeight: '500', fontSize: 18, fontFamily: 'poppins' }}>XII RPL 2</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, p: 2,justifyContent: 'flex-start ', ml: 'auto' }}>
+                              <Button sx={{ backgroundColor: '#4D91FF', p: 2, px: 3 }}>Lihat Izin</Button>  
+                            </Box>
+                        </Box>
+                      </Box>
+                </Box>
+              </Box>
         </Box>
-      </Box>
     </>
   )
 }
