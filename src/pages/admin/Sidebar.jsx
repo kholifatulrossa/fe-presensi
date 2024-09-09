@@ -16,8 +16,8 @@ import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
-import '@fontsource/poppins'
-import Logo from '../../assets/img/logo.png'
+import '@fontsource/poppins';
+import Logo from '../../assets/img/logo.png';
 import { FontDownloadOutlined } from '@mui/icons-material';
 
 const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, children }) => {
@@ -41,9 +41,9 @@ const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, childr
               bgcolor: '#4D91FF !important',
               '& .MuiTypography-root, & .MuiSvgIcon-root': {
                 color: selected ? 'white' : 'white',
-                transition: '0.1s ease-in-out'
-              }
-            }
+                transition: '0.1s ease-in-out',
+              },
+            },
           }}>
           <IconComponent
             sx={{
@@ -53,7 +53,7 @@ const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, childr
           />
           <Typography
             sx={{
-              color:  selected ? 'white' : 'black',
+              color: selected ? 'white' : 'black',
             }}
             className="MuiTypography-root"
             level="title-sm">
@@ -87,18 +87,19 @@ export default function Sidebar() {
         },
         transition: 'transform 0.4s, width 0.4s',
         zIndex: 10000,
-        height: '100vh',
+        height: '100dvh',
         width: 'var(--Sidebar-width)',
         top: 0,
         p: 2,
         flexShrink: 0,
+        justifyContent: 'space-between',
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
-        // borderRight: '1px solid',
+        boxShadow: '4px 0px 10px rgba(0, 0, 0, 0.1)',
         bgcolor: 'white',
         overflowY: 'auto',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
       }}>
       <Box
         className="Sidebar-overlay"
@@ -109,8 +110,7 @@ export default function Sidebar() {
           left: 0,
           width: '100vw',
           height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Dark backdrop
-          // backgroundColor: 'var(--joy-palette-background-backdrop)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark backdrop
           transition: 'opacity 0.4s',
           transform: {
             xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--Sidebar-width, 0px)))',
@@ -119,14 +119,14 @@ export default function Sidebar() {
         }}
         onClick={() => closeSidebar()}
       />
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent:'center', pr: 2,  }}>
-        <Box variant="soft" >
-            <img src={Logo} alt="Logo" style={{ width: '38px', height: 'auto' }} />
+      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'center', pr: 2 }}>
+        <Box variant="soft">
+          <img src={Logo} alt="Logo" style={{ width: '38px', height: 'auto' }} />
         </Box>
         <Typography textColor={'common.black'} style={{ fontFamily: 'Poppins', fontWeight: '700', fontSize: 20 }}>
           Presen<span style={{ color: '#4D91FF' }}>Siswa</span>
         </Typography>
-        
+
         {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
       </Box>
       {/* <Input size="sm" startDecorator={<SearchRoundedIcon />} placeholder="Search" /> */}
@@ -156,7 +156,7 @@ export default function Sidebar() {
         </List>
       </Box>
 
-      <Divider/>
+      <Divider />
       <Link to="/admin/profil" style={{ textDecoration: 'none', color: 'blue' }}>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', height: 60 }}>
           <Avatar variant="outlined" size="lg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286" />
