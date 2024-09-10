@@ -1,42 +1,77 @@
-
 import { Input } from '@mui/joy';
 import { Box, Button, Grid, Link, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import client from '../router/Client';
 
 export default function Login() {
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!identifier) {
+      alert('Masukkan NIP atau NISN');
+      return;
+    }
+
+    try {
+      const response = await client.post('/login', { identifier, password });
+      const data = response?.data;
+
+      alert('Berhasil Login');
+      console.log(data);
+
+      if (data.nip === null && data.siswa) {
+        navigate('/siswa');
+      } else {
+        navigate('/admin');
+      }
+
+      localStorage.setItem('token', data.token);
+    } catch (error) {
+      console.error('Error: ', error);
+      alert('Gagal Login');
+    }
+  };
+
   return (
     <>
-        <Box
-          sx={{
-            height: '100vh',
-            width: '100vw',
-            backgroundRepeat: 'no-repeat',
-            background: 'linear-gradient(to right, #DFE6F2, #7AA2E3)',
-            display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            alignItems: 'center',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover'
-          }}>
-          <Box sx={{ width: '80%', height: '75%', borderRadius: 2, overflow: 'hidden', boxShadow: '0px 4px 10px 4px rgba(0, 0, 0, 0.1)' }}>
-            <Grid container sx={{ height: '100%' }}>
-              <Grid item xs={6} sx={{ bgcolor: '#7AA2E3' }}></Grid>
-              <Grid item xs={6} sx={{ bgcolor: 'white', display: 'flex', alignItems: 'center' }}>
-                <Box className="wrapper" sx={{ height: 'auto', width: '100%', px: 18 }}>
-                  <Box className="tittle" display="flex" alignItems="center" sx={{ width: '100%', justifyContent: 'center', mb: 3 }}>
-                    <img src="assets/fluent_people-eye.png" className="h-9 me-3" alt="Logo" />
-                    <Typography textAlign="center" fontWeight={600} fontSize={30}>
-                      Presen<span className="text-[#4D91FF]">Siswa</span>
-                    </Typography>
-                  </Box>
+      <Box
+        sx={{
+          height: '100vh',
+          width: '100vw',
+          backgroundRepeat: 'no-repeat',
+          background: 'linear-gradient(to right, #DFE6F2, #7AA2E3)',
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          alignItems: 'center',
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+        }}>
+        <Box sx={{ width: '80%', height: '75%', borderRadius: 2, overflow: 'hidden', boxShadow: '0px 4px 10px 4px rgba(0, 0, 0, 0.1)' }}>
+          <Grid container sx={{ height: '100%' }}>
+            <Grid item xs={6} sx={{ bgcolor: '#7AA2E3' }}></Grid>
+            <Grid item xs={6} sx={{ bgcolor: 'white', display: 'flex', alignItems: 'center' }}>
+              <Box className="wrapper" sx={{ height: 'auto', width: '100%', px: 18 }}>
+                <Box className="tittle" display="flex" alignItems="center" sx={{ width: '100%', justifyContent: 'center', mb: 3 }}>
+                  <img src="assets/fluent_people-eye.png" className="h-9 me-3" alt="Logo" />
+                  <Typography textAlign="center" fontWeight={600} fontSize={30}>
+                    Presen<span className="text-[#4D91FF]">Siswa</span>
+                  </Typography>
+                </Box>
+                <form onSubmit={handleSubmit}>
                   <Box className="input-wrapper" pt={6}>
                     <Input
                       variant="solid"
-                      // size="lg"
                       placeholder="NISN"
-
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
                       sx={{
                         padding: 1,
                         paddingLeft: 3,
@@ -52,9 +87,9 @@ export default function Login() {
                     />
                     <Input
                       variant="solid"
-                      // size="lg"
                       placeholder="Password"
-
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       sx={{
                         padding: 1,
                         paddingLeft: 3,
@@ -68,34 +103,31 @@ export default function Login() {
                       }}
                     />
                   </Box>
-                  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', mt: 1.4,  }}>
-                    <Link href="https://www.instagram.com/domdo._/" color="#7AA2E3" fontSize={14} underline="none" sx={{'&:hover': {textDecoration: 'underline'}}}>
+                  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'end', mt: 1.4 }}>
+                    <Link href="https://www.instagram.com/domdo._/" color="#7AA2E3" fontSize={14} underline="none" sx={{ '&:hover': { textDecoration: 'underline' } }}>
                       Forgot Password?
                     </Link>
                   </Box>
                   <Box sx={{ display: 'flex', height: 40, width: '100%', alignItems: 'center', justifyContent: 'center', mt: 1 }}>
-                  <Link href="admin/dashboard" target="_self" underline="none">
-                    <Button variant="contained"  sx={{ fontFamily: "Poppins", fontSize:17, bgcolor: '#7AA2E3', width: 140, height: 50, borderRadius: 180, fontWeight: 'bold', textTransform: 'capitalize', }}>
+                    <Button variant="contained" type="submit" sx={{ fontFamily: 'Poppins', fontSize: 17, bgcolor: '#7AA2E3', width: 140, height: 50, borderRadius: 180, fontWeight: 'bold', textTransform: 'capitalize' }}>
                       Login
                     </Button>
-                    </Link>
                   </Box>
-                  <Typography textAlign="center" fontSize={14} pt={5} sx={{ fontFamily: "Poppins" }}>
-                    Don't have account yet?{' '}
-                    <Link href="https://www.instagram.com/domdo._/" underline="none" sx={{color: '#7AA2E3', '&:hover': {textDecoration: 'underline'}}}>
-                      Register
-                    </Link>
-                  </Typography>
-                </Box>
-              </Grid>
+                </form>
+                <Typography textAlign="center" fontSize={14} pt={5} sx={{ fontFamily: 'Poppins' }}>
+                  Don't have account yet?{' '}
+                  <Link href="https://www.instagram.com/domdo._/" underline="none" sx={{ color: '#7AA2E3', '&:hover': { textDecoration: 'underline' } }}>
+                    Register
+                  </Link>
+                </Typography>
+              </Box>
             </Grid>
-          </Box>
-          <Link fontSize={10} href="https://www.instagram.com/domdo._/" fontWeight={400} pt={2} underline="none" sx={{ color: 'GrayText' }}>
-            Copyright@
-          </Link>
+          </Grid>
         </Box>
+        <Link fontSize={10} href="https://www.instagram.com/wntaa.jsx/" fontWeight={400} pt={2} underline="none" sx={{ color: 'GrayText' }}>
+          Copyright@
+        </Link>
+      </Box>
     </>
   );
 }
-
-
