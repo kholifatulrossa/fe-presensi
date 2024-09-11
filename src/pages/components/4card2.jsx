@@ -16,14 +16,15 @@ const FourCard = () => {
           display: 'flex',
           width: '100%',
           gap: 2,
+          alignItems: 'center'
         }}>
         <Box>
         <Box sx={{ p: 1,  }}>
           <Box
             sx={{
               bgcolor: '#4D91FF',
-              width: '20vw',
-              height: 'auto',
+              width: '23vw',
+              py: 3.5,
               borderRadius: '8px',
               display: 'flex',
               justifyContent: 'center',
@@ -49,9 +50,8 @@ const FourCard = () => {
           <Box
             sx={{
               bgcolor: '#74ff4d',
-              width: '20vw',
-              height: 'auto',
-              padding: '30px 40px',
+              width: '23vw',
+              py: 3.5,
               borderRadius: '8px',
               display: 'flex',
               justifyContent: 'center',
@@ -79,9 +79,8 @@ const FourCard = () => {
           <Box
             sx={{
               bgcolor: '#ff4d4d',
-              width: '20vw',
-              height: 'auto',
-              padding: '30px 40px',
+              width: '23vw',
+              py: 3.5,
               borderRadius: '8px',
               display: 'flex',
               justifyContent: 'center',
@@ -108,9 +107,8 @@ const FourCard = () => {
             sx={{
               // bgcolor: '#fcff4d',
               background: 'linear-gradient(to right, #FCFF4D, #fdff94)' ,
-              width: '20vw',
-              height: 'auto',
-              padding: '30px 40px',
+              width: '23vw',
+              py: 3.5,
               borderRadius: '8px',
               display: 'flex',
               justifyContent: 'center',
