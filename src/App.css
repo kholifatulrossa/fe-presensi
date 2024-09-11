@@ -9,6 +9,10 @@ body {
   margin: 0;
 }
 
+html{
+  overflow-x: calc(90%);
+}
+
 html {
   overflow-x: hidden;
 }

@@ -6,6 +6,7 @@ import Header from './admin/Header';
 import Sidebar from './admin/Sidebar';
 import { Outlet } from 'react-router-dom';
 import { Typography } from '@mui/joy';
+import { Typography } from '@mui/joy';
 
 const DashboardPage = () => {
   return (
@@ -15,6 +16,7 @@ const DashboardPage = () => {
         <Box sx={{ width: '100%', height: 'auto' }}>
           <Header />
           <Outlet />
+          <Typography></Typography>
           <Typography></Typography>
         </Box>
       </Box>

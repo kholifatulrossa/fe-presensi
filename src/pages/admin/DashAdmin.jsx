@@ -6,10 +6,13 @@ import CustomTable from '../components/Table';
 import FourCard from '../components/4card2';
 import BasicTable from '../components/Table';
 import { CustomButton } from '../components/Button';
+import BasicTable from '../components/Table';
+import { CustomButton } from '../components/Button';
 
 export const MainDash = () => {
   return (
     <>
+      <Box sx={{ backgroundColor: '#F5F5FF', height: 'auto', width: 'auto' }}>
       <Box sx={{ backgroundColor: '#F5F5FF', height: 'auto', width: 'auto' }}>
         <Box sx={{ p: 3 }}>
           <Typography
@@ -35,6 +38,7 @@ export const MainDash = () => {
             gap: 4, 
           }}>
             <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
           <Box
             sx={{
               backgroundColor: 'white',
@@ -46,6 +50,7 @@ export const MainDash = () => {
             }}>
             <Clock />
           </Box>
+          <FourCard/>
           <FourCard/>
           </Box>
           <Box
