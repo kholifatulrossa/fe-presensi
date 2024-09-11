@@ -69,7 +69,7 @@ export default function Login() {
                   <Box className="input-wrapper" pt={6}>
                     <Input
                       variant="solid"
-                      placeholder="NISN"
+                      placeholder="NIP/NISN"
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
                       sx={{

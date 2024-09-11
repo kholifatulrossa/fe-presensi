@@ -11,22 +11,19 @@ import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 const FourCard = () => {
   return (
     <>
-      <Typography fontWeight="700" fontSize="30px" color="#272A2C" sx={{ p: 1 }}>
-        Dashboard Presensi
-      </Typography>
       <Box
         sx={{
           display: 'flex',
-          width: 'auto',
-          gap: 5,
+          width: '100%',
+          gap: 2,
         }}>
-        <Box sx={{ p: 1 }}>
+        <Box>
+        <Box sx={{ p: 1,  }}>
           <Box
             sx={{
-              bgcolor: '#E6EFFF',
-              width: '80%',
+              bgcolor: '#4D91FF',
+              width: '20vw',
               height: 'auto',
-              padding: '30px 40px',
               borderRadius: '8px',
               display: 'flex',
               justifyContent: 'center',
@@ -34,7 +31,7 @@ const FourCard = () => {
               gap: '20px',
             }}>
             <Box>
-              <Typography fontFamily="poppins" fontWeight="700" fontSize={20} color="#272A2C">
+              <Typography fontFamily="poppins" fontWeight="700" fontSize={20} sx={{ paddingBottom: 1 }} color="#272A2C">
                 Total Presensi
               </Typography>
               <Typography fontFamily="poppins" fontWeight="700" fontSize="25px" color="#272A2C">
@@ -47,11 +44,12 @@ const FourCard = () => {
             <AccessTimeFilledRoundedIcon sx={{ fontSize: '80px', paddingRight: '10px', color: '#5f84bf', fontWeight: 'bold' }} />
           </Box>
         </Box>
+
         <Box sx={{ p: 1 }}>
           <Box
             sx={{
-              bgcolor: '#EAFFE3',
-              width: '80%',
+              bgcolor: '#74ff4d',
+              width: '20vw',
               height: 'auto',
               padding: '30px 40px',
               borderRadius: '8px',
@@ -61,7 +59,7 @@ const FourCard = () => {
               gap: '20px',
             }}>
             <Box>
-              <Typography fontFamily="poppins" fontWeight="700" fontSize={20} color="#272A2C">
+              <Typography fontFamily="poppins" fontWeight="700" fontSize={20} sx={{ paddingBottom: 1 }} color="#272A2C">
                 Total Hadir
               </Typography>
               <Typography fontFamily="poppins" fontWeight="700" fontSize="25px" color="#272A2C">
@@ -74,12 +72,14 @@ const FourCard = () => {
             <OfflinePinRoundedIcon sx={{ fontSize: '80px', paddingRight: '10px', color: '#77BF5F', fontWeight: 'bold' }} />
           </Box>
         </Box>
+            </Box>
 
+          <Box>
         <Box sx={{ p: 1 }}>
           <Box
             sx={{
-              bgcolor: '#FFE2E2',
-              width: '80%',
+              bgcolor: '#ff4d4d',
+              width: '20vw',
               height: 'auto',
               padding: '30px 40px',
               borderRadius: '8px',
@@ -89,7 +89,7 @@ const FourCard = () => {
               gap: '20px',
             }}>
             <Box>
-              <Typography fontFamily="poppins" fontWeight="700" fontSize={20} color="#272A2C">
+              <Typography fontFamily="poppins" fontWeight="700" fontSize={20} sx={{ paddingBottom: 1 }} color="#272A2C">
                 Total Alpa
               </Typography>
               <Typography fontFamily="poppins" fontWeight="700" fontSize="25px" color="#272A2C">
@@ -102,11 +102,13 @@ const FourCard = () => {
             <CancelRoundedIcon sx={{ fontSize: '80px', paddingRight: '10px', color: '#e06969', fontWeight: 'bold' }} />
           </Box>
         </Box>
+
         <Box sx={{ p: 1 }}>
           <Box
             sx={{
-              bgcolor: '#FEFFD3',
-              width: '80%',
+              // bgcolor: '#fcff4d',
+              background: 'linear-gradient(to right, #FCFF4D, #fdff94)' ,
+              width: '20vw',
               height: 'auto',
               padding: '30px 40px',
               borderRadius: '8px',
@@ -116,7 +118,7 @@ const FourCard = () => {
               gap: '20px',
             }}>
             <Box>
-              <Typography fontFamily="poppins" fontWeight="700" fontSize={20} color="#272A2C">
+              <Typography fontFamily="poppins" fontWeight="700" fontSize={20} sx={{ paddingBottom: 1 }} color="#272A2C">
                 Total Telat
               </Typography>
               <Typography fontFamily="poppins" fontWeight="700" fontSize="25px" color="#272A2C">
@@ -128,6 +130,7 @@ const FourCard = () => {
             </Box>
             <ErrorRoundedIcon sx={{ fontSize: '80px', paddingRight: '10px', color: '#EFE358', fontWeight: 'bold' }} />
           </Box>
+        </Box>
         </Box>
       </Box>
     </>

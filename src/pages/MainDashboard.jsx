@@ -5,15 +5,17 @@ import React from 'react';
 import Header from './admin/Header';
 import Sidebar from './admin/Sidebar';
 import { Outlet } from 'react-router-dom';
+import { Typography } from '@mui/joy';
 
 const DashboardPage = () => {
   return (
     <>
-      <Box sx={{ display: 'flex', height: '100%', width: '100vw', bgcolor: 'white' }}>
+      <Box sx={{ display: 'flex', height: '100%', width: '100%', bgcolor: 'white' }}>
         <Sidebar />
         <Box sx={{ width: '100%', height: 'auto' }}>
           <Header />
           <Outlet />
+          <Typography></Typography>
         </Box>
       </Box>
     </>

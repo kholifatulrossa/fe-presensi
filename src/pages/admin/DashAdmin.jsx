@@ -4,11 +4,13 @@ import Clock from '../components/Clock';
 import { useTheme } from '@mui/joy/styles';
 import CustomTable from '../components/Table';
 import FourCard from '../components/4card2';
+import BasicTable from '../components/Table';
+import { CustomButton } from '../components/Button';
 
 export const MainDash = () => {
   return (
     <>
-      <Box sx={{ backgroundColor: '#F5F5FF', height: 'auto' }}>
+      <Box sx={{ backgroundColor: '#F5F5FF', height: 'auto', width: 'auto' }}>
         <Box sx={{ p: 3 }}>
           <Typography
             level="p"
@@ -32,6 +34,7 @@ export const MainDash = () => {
             flexWrap: 'wrap',
             gap: 4,
           }}>
+            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
           <Box
             sx={{
               backgroundColor: 'white',
@@ -43,17 +46,7 @@ export const MainDash = () => {
             }}>
             <Clock />
           </Box>
-          <Box
-            sx={{
-              backgroundColor: 'white',
-              p: 5,
-              borderRadius: 10,
-              width: '100%',
-              height: 'auto',
-              boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, 0.1)',
-              color: 'black',
-            }}>
-            <FourCard />
+          <FourCard/>
           </Box>
           <Box
             sx={{
@@ -64,8 +57,17 @@ export const MainDash = () => {
               height: 'auto',
               boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, 0.1)',
               color: 'black',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2
             }}>
-            <CustomTable />
+              <Box sx={{ display: 'inline-flex', justifyContent: 'space-between' }}>
+              <Typography fontWeight="700" fontSize="25px" color="#272A2C" sx={{ p: 1, fontFamily: 'poppins' }}>
+                Tabel data Presensi
+              </Typography>
+              <CustomButton/>
+              </Box>
+            <BasicTable />
           </Box>
         </Box>
       </Box>
