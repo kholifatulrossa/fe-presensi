@@ -32,7 +32,7 @@ export const MainDash = () => {
             mx: 3,
             mb: 2,
             flexWrap: 'wrap',
-            gap: 4,
+            gap: 4, 
           }}>
             <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
           <Box
@@ -61,12 +61,6 @@ export const MainDash = () => {
               flexDirection: 'column',
               gap: 2
             }}>
-              <Box sx={{ display: 'inline-flex', justifyContent: 'space-between' }}>
-              <Typography fontWeight="700" fontSize="25px" color="#272A2C" sx={{ p: 1, fontFamily: 'poppins' }}>
-                Tabel data Presensi
-              </Typography>
-              <CustomButton/>
-              </Box>
             <BasicTable />
           </Box>
         </Box>

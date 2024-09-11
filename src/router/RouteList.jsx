@@ -4,6 +4,7 @@ import DashboardPage from '../pages/MainDashboard';
 import DashAdmin from '../pages/admin/DashAdmin';
 import { Perizinan } from '../pages/admin/Perizinan';
 import { DataKelas } from '../pages/admin/DataKelas';
+import NotificationPopup from '../pages/components/Alert';
 
 const routes = createBrowserRouter([
   {
@@ -19,6 +20,14 @@ const routes = createBrowserRouter([
       { path: '/admin/dataKelas', element: <DataKelas /> },
     ],
   },
+  {
+    path :'/dashboard',
+    element: <DashboardPage/>
+  },
+  {
+    path: '/alert',
+    element: <NotificationPopup/>
+  }
 ]);
 
 export default routes;

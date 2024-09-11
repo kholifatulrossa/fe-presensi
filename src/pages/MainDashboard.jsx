@@ -11,7 +11,7 @@ const DashboardPage = () => {
   return (
     <>
       <Box sx={{ display: 'flex', height: '100%', width: '100%', bgcolor: 'white' }}>
-        <Sidebar />
+        <Sidebar/>
         <Box sx={{ width: '100%', height: 'auto' }}>
           <Header />
           <Outlet />

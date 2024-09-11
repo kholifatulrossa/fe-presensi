@@ -12,6 +12,8 @@ export default function Header() {
         return 'Dashboard';
       case '/admin/dataKelas':
         return 'Data Kelas';
+      case '/dashboard':
+        return 'Dashboard'
     }
   };
   return (

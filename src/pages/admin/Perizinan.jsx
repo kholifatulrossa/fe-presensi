@@ -1,7 +1,8 @@
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 import { Box, Typography, Button } from '@mui/joy'
 import Logo from '../../assets/img/logo.png'
 import PopUpForm from '../components/FormIzin'
+import NotificationPopup from '../components/Alert'
 
 export const Perizinan = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -16,6 +17,20 @@ export const Perizinan = () => {
     setIsOpen(false)
     setTimeout(() => setFade(false), 500)
   };
+
+  // pop up notification
+  const showNotificationRef = useRef(null);
+
+  const handleNotificationTrigger = (trigger) => {
+    showNotificationRef.current = trigger;
+  };
+
+  const handleClick = () => {
+    if (showNotificationRef.current) {
+      showNotificationRef.current("Successful accept all!", "Info!")
+    }
+  }
+
   return (
     <>
         <Box sx={{ backgroundColor: '#f5f5ff', width: '100%', height: '100vh' }}>
@@ -27,9 +42,10 @@ export const Perizinan = () => {
               {fade && (
                 <PopUpForm isOpen={isOpen} onClose={handleClose} />
               )}
-              <Button sx={{ padding: '20px 40px', backgroundColor: '#4D91FF',color: 'white', fontSize: 20, fontWeight: '600', boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, 0.1)', '&:hover': { color: 'white'}}}>
+              <Button onClick={handleClick} sx={{ padding: '20px 40px', backgroundColor: '#4D91FF',color: 'white', fontSize: 20, fontWeight: '600', boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, 0.1)', '&:hover': { color: 'white'}}}>
                 Accept All
               </Button>
+              <NotificationPopup triggerNotification={handleNotificationTrigger} />
             </Box>
               <Box 
                 sx={{ backgroundColor: '#4D91FF', display: 'flex', alignItems: 'center', boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, 0.1)', width: '25%', height: 'auto', padding: '0 0 0 10px', borderRadius: '8px'}}>

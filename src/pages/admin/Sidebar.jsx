@@ -12,13 +12,11 @@ import ListItemButton, { listItemButtonClasses } from '@mui/joy/ListItemButton';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import DraftsIcon from '@mui/icons-material/Drafts';
-import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
 import '@fontsource/poppins';
 import Logo from '../../assets/img/logo.png';
-import { FontDownloadOutlined } from '@mui/icons-material';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import DraftsIcon from '@mui/icons-material/Drafts'
+import ClassRoundedIcon from '@mui/icons-material/ClassRounded'
 
 const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, children }) => {
   return (
@@ -66,7 +64,7 @@ const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, childr
   );
 };
 
-export default function Sidebar() {
+export default function Sidebar({ showDashboardOnly }) {
   const [selected, setSelected] = useState(false);
   const [showChip, setShowChip] = useState(true);
 
@@ -126,10 +124,7 @@ export default function Sidebar() {
         <Typography textColor={'common.black'} style={{ fontFamily: 'Poppins', fontWeight: '700', fontSize: 20 }}>
           Presen<span style={{ color: '#4D91FF' }}>Siswa</span>
         </Typography>
-
-        {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
       </Box>
-      {/* <Input size="sm" startDecorator={<SearchRoundedIcon />} placeholder="Search" /> */}
       <Box
         sx={{
           minHeight: 0,
@@ -149,9 +144,15 @@ export default function Sidebar() {
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}>
           <div>
-            <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href="/admin" selected={selected === 'home'} onClick={() => handleClick('home')} />
-            <ListItemWithIcon IconComponent={DraftsIcon} text="Permohonan izin" href="/admin/perizinan" selected={selected === 'perizinan'} onClick={() => handleClick('perizinan')} />
-            <ListItemWithIcon IconComponent={ClassRoundedIcon} text="Data Kelas" href="/admin/dataKelas" selected={selected === 'dataKelas'} onClick={() => handleClick('dataKelas')} />
+            {showDashboardOnly ? (
+              <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href="/admin" selected={selected === 'home'} onClick={() => handleClick('home')} />
+            ) : (
+              <>
+                <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href="/admin" selected={selected === 'home'} onClick={() => handleClick('home')} />
+                <ListItemWithIcon IconComponent={DraftsIcon} text="Permohonan izin" href="/admin/perizinan" selected={selected === 'perizinan'} onClick={() => handleClick('perizinan')} />
+                <ListItemWithIcon IconComponent={ClassRoundedIcon} text="Data Kelas" href="/admin/dataKelas" selected={selected === 'dataKelas'} onClick={() => handleClick('dataKelas')} />
+              </>
+            )}
           </div>
         </List>
       </Box>
@@ -161,7 +162,7 @@ export default function Sidebar() {
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', height: 60 }}>
           <Avatar variant="outlined" size="lg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286" />
           <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Typography level="title-lg">Siriwat K.</Typography> {/* ini adalah nama pe */}
+            <Typography level="title-lg">Siriwat K.</Typography>
             <Typography level="body-md">siriwatk@test.com</Typography>
           </Box>
           <IconButton size="md" variant="plain" color="danger">
