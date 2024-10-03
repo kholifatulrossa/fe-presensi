@@ -21,20 +21,23 @@ export default function Login() {
 
     try {
       const response = await client.post('/login', { identifier, password });
-      const data = response?.data;
+      const datas = response?.data.login;
+      localStorage.setItem('token', datas.token);
 
-      alert('Berhasil Login');
-      console.log(data);
+      alert(response.data.message);
+      console.log(datas);
 
-      if (data.login.guruId === null) {
+      
+
+      if (datas.guru === null && datas.siswa) {
+        localStorage.setItem('nama', datas.siswa.nama);
+        localStorage.setItem('nisn', datas.siswa.nisn);
         navigate('/users');
-      }else if(data.login.siswaId === null) {
+      } else {
+        localStorage.setItem('nama', datas.guru.nama);
+        localStorage.setItem('nip', datas.guru.nip);
         navigate('/admin');
-      }else{
-        console.log(error.message)
       }
-
-      localStorage.setItem('token', data.token);
     } catch (error) {
       console.error('Error: ', error);
       alert('Gagal Login');

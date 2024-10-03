@@ -3,18 +3,19 @@ import { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/joy';
 import Clock from '../components/Clock';
 import FourCard from '../components/4card2';
+import { Navigate } from 'react-router-dom';
 import BasicTable from '../components/Table';  // Import your BasicTable component
 import axios from 'axios';
+import client from '../../router/Client';
 
 export const MainDash = () => {
   const [tableData, setTableData] = useState([]); // State to hold the table data
 
   useEffect(() => {
-    // Fetch data from API
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:3000/api/kehadiran');
-        setTableData(response.data); // Assume the response contains an array of rows
+        setTableData(response.data); 
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -22,6 +23,16 @@ export const MainDash = () => {
 
     fetchData();
   }, []);
+
+  // useEffect(() => {
+  //   client.get('kehadiran').then(({data}) => {
+
+  //   })
+  // })
+
+  if (localStorage.getItem('token') == null) {
+    return <Navigate to={"/"} />
+  }
 
   return (
     <Box sx={{ backgroundColor: '#F5F5FF', height: 'auto', width: 'auto' }}>
