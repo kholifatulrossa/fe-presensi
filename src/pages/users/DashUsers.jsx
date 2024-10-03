@@ -4,6 +4,7 @@ import Typography from '@mui/joy/Typography';
 import '@fontsource/poppins';
 import Clock from '../components/Clock';
 import FourCard from '../components/4card2';
+import { Navigate } from 'react-router-dom';
 import BasicTable from '../components/Table';
 
 // Function to get formatted date
@@ -17,9 +18,14 @@ const getFormattedDate = () => {
 export const DashUsers = () => {
   const [currentDate, setCurrentDate] = useState('');
 
+  
   useEffect(() => {
     setCurrentDate(getFormattedDate());
   }, []);
+  
+  if (localStorage.getItem('token') == null) {
+    return <Navigate to={"/"} />
+  }
 
   return (
     <>
