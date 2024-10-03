@@ -3,6 +3,7 @@ import { Box, Button, Grid, Link, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import React, { useRef, useState } from 'react';
 import client from '../router/Client';
+import Logo from '../assets/img/logo.png'
 
 export default function Login() {
   const [identifier, setIdentifier] = useState('');
@@ -25,10 +26,12 @@ export default function Login() {
       alert('Berhasil Login');
       console.log(data);
 
-      if (data.nip === null && data.siswa) {
-        navigate('/siswa');
-      } else {
+      if (data.login.guruId === null) {
+        navigate('/users');
+      }else if(data.login.siswaId === null) {
         navigate('/admin');
+      }else{
+        console.log(error.message)
       }
 
       localStorage.setItem('token', data.token);
@@ -60,8 +63,8 @@ export default function Login() {
             <Grid item xs={6} sx={{ bgcolor: 'white', display: 'flex', alignItems: 'center' }}>
               <Box className="wrapper" sx={{ height: 'auto', width: '100%', px: 18 }}>
                 <Box className="tittle" display="flex" alignItems="center" sx={{ width: '100%', justifyContent: 'center', mb: 3 }}>
-                  <img src="assets/fluent_people-eye.png" className="h-9 me-3" alt="Logo" />
-                  <Typography textAlign="center" fontWeight={600} fontSize={30}>
+                  <img src={Logo} alt="Logo" style={{ width: '38px', height: 'auto', mx:8 }} />
+                  <Typography textAlign="center" fontWeight={600} fontSize={30} sx={{ fontFamily: 'poppins' }}>
                     Presen<span className="text-[#4D91FF]">Siswa</span>
                   </Typography>
                 </Box>
@@ -88,6 +91,7 @@ export default function Login() {
                     <Input
                       variant="solid"
                       placeholder="Password"
+                      type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       sx={{

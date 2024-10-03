@@ -11,9 +11,9 @@ import Input from '@mui/joy/Input';
 import PDFIcon from '../../assets/icon/eksporPDF.png';
 import Typography from '@mui/joy/Typography';
 import jsPDF from 'jspdf';
-import "jspdf-autotable"
+import "jspdf-autotable";
 
-function exportToPDF() {
+function exportToPDF(data) {
   const doc = new jsPDF();
 
   // Add a title
@@ -24,15 +24,15 @@ function exportToPDF() {
   const tableRows = [];
 
   // Loop through the rows and push the data to tableRows
-  rows.forEach((row, index) => {
+  data.forEach((row, index) => {
     const rowData = [
       index + 1,  // No
-      row.date,
-      row.nama,
-      row.kelas,
-      row.keterangan,
-      row.hadir,
-      row.pulang
+      row.tanggal,
+      row.siswa.nama,
+      row.siswa.kelasId,
+      row.status,
+      row.wktdatang,
+      row.wktpulang
     ];
     tableRows.push(rowData);
   });
@@ -48,25 +48,12 @@ function exportToPDF() {
   doc.save('presensi-data.pdf');
 }
 
-// Sample data
-function createData(date, nama, kelas, keterangan, hadir, pulang) {
-  return { date, nama, kelas, keterangan, hadir, pulang };
-}
-
-const rows = [
-  createData('2023-12-21', 'Frozen Frozen', 'XII RPL 1', 'Hadir', '06.45', '15.00'),
-  createData('2023-12-25', 'Anna Anna', 'XII RPL 2', 'Sakit', '07.00', '14.00'),
-  createData('2023-07-17', 'Elsa Elsa', 'XII RPL 1', 'Izin', '06.50', '15.00'),
-  createData('2023-04-18', 'Kristoff Kristoff', 'XII RPL 3', 'Hadir', '07.15', '14.45'),
-  createData('2023-01-31', 'Olaf Olaf', 'XII RPL 2', 'Alpa', '07.00', '14.30'),
-];
-
-export default function BasicTable() {
+export default function BasicTable({ data = [], showFilterButton = true, showSearchButton = true, showPDFExport = true }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const ref = useRef(null);
-  const [searchQuery, setSearchQuery] = useState(''); // State for search query
-  const [filteredRows, setFilteredRows] = useState(rows); // State for filtered rows
+  const [searchQuery, setSearchQuery] = useState(''); 
+  const [filteredRows, setFilteredRows] = useState(data); 
 
   // Handle dropdown menu open/close
   const handleClick = (event) => {
@@ -86,7 +73,6 @@ export default function BasicTable() {
   // Handle sorting by name A-Z, Z-A
   const sortByNameAsc = () => {
     const sortedRows = [...filteredRows].sort((a, b) => a.nama.localeCompare(b.nama));
-    console.log("Sorted by A to Z = ", sortedRows)
     setFilteredRows(sortedRows);
     handleClose();
   };
@@ -115,12 +101,11 @@ export default function BasicTable() {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
 
-    const filteredData = rows.filter((row) =>
-      row.nama.toLowerCase().includes(query) ||
-      row.date.toLowerCase().includes(query) 
+    const filteredData = data.filter((row) =>
+      row.siswa.nama.toLowerCase().includes(query) ||
+      row.tanggal.toLowerCase().includes(query) ||
+      row.status.toLowerCase().includes(query) 
     );
-
-    console.log("Filtered data", filteredData)
 
     setFilteredRows(filteredData);
   };
@@ -129,7 +114,7 @@ export default function BasicTable() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (ref.current && !ref.current.contains(event.target)) {
-        handleClose();
+        handleClose();  
       }
     };
 
@@ -139,65 +124,74 @@ export default function BasicTable() {
     };
   }, [open]);
 
-    
+  useEffect(() => {
+    setFilteredRows(data);
+  }, [data]);
+
   return (
-    <Box>
+    <Box sx={{ width: '100%' }}>
       <Box ref={ref} sx={{ display: 'flex', gap: 1, justifyContent: 'space-between', pb: 2 }}>
         <Typography fontWeight="700" fontSize="25px" color="#272A2C" sx={{ p: 1, fontFamily: 'poppins' }}>
           Tabel data Presensi
         </Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button
-            sx={{
-              padding: '14px 30px',
-              backgroundColor: '#f5f5f9',
-              color: 'gray',
-              fontFamily: 'poppins',
-              '&:hover': { backgroundColor: '#f5f5f9' },
-              alignItems: 'center',
-            }}
-            aria-controls={open ? 'dropdown-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}
-          >
-            Filter <span style={{ display: 'flex', alignItems: 'center' }}><KeyboardArrowDownRoundedIcon /></span>
-          </Button>
-          <Menu
+          { showFilterButton && (
+            <Button
+              sx={{
+                padding: '14px 30px',
+                backgroundColor: '#f5f5f9',
+                color: 'gray',
+                fontFamily: 'poppins',
+                '&:hover': { backgroundColor: '#f5f5f9' },
+                alignItems: 'center',
+              }}
+              aria-controls={open ? 'dropdown-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}
+            >
+              Filter <span style={{ display: 'flex', alignItems: 'center' }}><KeyboardArrowDownRoundedIcon /></span>
+            </Button>
+            )}
+            <Menu
             id="dropdown-menu"
             anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            sx={{ backgroundColor: 'white', border: 'none' }}
-          >
-            {/* Dropdown items */}
-            <MenuItem onClick={sortByNameAsc} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-              A → Z
-            </MenuItem>
-            <MenuItem onClick={sortByNameDesc} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-              Z → A
-            </MenuItem>
-            <MenuItem onClick={sortByDateLatest} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-              Tanggal Terbaru
-            </MenuItem>
-            <MenuItem onClick={sortByDateRecent} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-              Tanggal Terlama
-            </MenuItem>
-          </Menu>
-          <Box
-            sx={{ backgroundColor: '#f5f5f9', display: 'flex', alignItems: 'center', border: 'none', width: '15vw', borderRadius: 6 }}
-          >
-            <SearchIcon sx={{ fontSize: 22, color: 'gray', pl: 3 }} />
-            <Input
-              placeholder="Cari"
-              value={searchQuery}
-              onChange={handleSearch}
-              sx={{ fontFamily: 'poppins', fontSize: 15, fontWeight: 600, boxShadow: 'none', border: 'none', bgcolor: '#f5f5f9', color: 'gray', width: '100%', height: '100%', mx: 'auto' }}
-            />
-          </Box>
-          <Button onClick={exportToPDF} sx={{ padding: '14px 30px', color: 'white', backgroundColor: '#F15C5C', '&:hover': { backgroundColor: '#DF5A5A' } }}>
-            <img src={PDFIcon} alt="PDF icon" style={{ width: '25px', height: '25px', marginRight: '10px' }} />Ekspor PDF
-          </Button>
+              open={open}
+              onClose={handleClose}
+              sx={{ backgroundColor: 'white', border: 'none' }}
+            >
+              {/* Dropdown items */}
+              <MenuItem onClick={sortByNameAsc} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
+                A → Z
+              </MenuItem>
+              <MenuItem onClick={sortByNameDesc} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
+                Z → A
+              </MenuItem>
+              <MenuItem onClick={sortByDateLatest} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
+                Tanggal Terbaru
+              </MenuItem>
+              <MenuItem onClick={sortByDateRecent} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
+                Tanggal Terlama
+              </MenuItem>
+            </Menu>
+            { showSearchButton && (
+            <Box
+              sx={{ backgroundColor: '#f5f5f9', display: 'flex', alignItems: 'center', border: 'none', width: '15vw', borderRadius: 6 }}
+            >
+              <SearchIcon sx={{ fontSize: 22, color: 'gray', pl: 3 }} />
+              <Input
+                placeholder="Cari"
+                value={searchQuery}
+                onChange={handleSearch}
+                sx={{ fontFamily: 'poppins', fontSize: 15, fontWeight: 600, boxShadow: 'none', border: 'none', bgcolor: '#f5f5f9', color: 'gray', width: '100%', height: '100%', mx: 'auto' }}
+              />
+            </Box>
+              )}
+              { showPDFExport && (
+            <Button onClick={() => exportToPDF(filteredRows)} sx={{ padding: '14px 30px', color: 'white', backgroundColor: '#F15C5C', '&:hover': { backgroundColor: '#DF5A5A' } }}>
+              <img src={PDFIcon} alt="PDF icon" style={{ width: '25px', height: '25px', marginRight: '10px' }} />Ekspor PDF
+            </Button>
+              )}
         </Box>
       </Box>
       <Table aria-label="basic table" sx={{ border: '3px solid #dcdfe2', borderRadius: 8 }}>
@@ -216,12 +210,12 @@ export default function BasicTable() {
           {filteredRows.map((row, index) => (
             <tr key={index} style={{ textAlign: 'left' }}>
               <td style={{ textAlign: 'center' }}>{index + 1}</td>
-              <td style={{ fontWeight: 500, color: '#696969', width: '100%' }}>{row.date}</td>
-              <td style={{ fontWeight: 500 }}>{row.nama}</td>
-              <td style={{ fontWeight: 500 }}>{row.kelas}</td>
-              <td style={{ fontWeight: 500 }}>{row.keterangan}</td>
-              <td style={{ fontWeight: 500 }}>{row.hadir}</td>
-              <td style={{ fontWeight: 500 }}>{row.pulang}</td>
+              <td style={{ fontWeight: 500, color: '#696969', width: '100%' }}>{row.tanggal.slice(0, 10)}</td>
+              <td style={{ fontWeight: 500 }}>{row.siswa.nama}</td>
+              <td style={{ fontWeight: 500 }}>{row.siswa.kelasId}</td>
+              <td style={{ fontWeight: 500 }}>{row.status}</td>
+              <td style={{ fontWeight: 500 }}>{row.wktdatang}</td>
+              <td style={{ fontWeight: 500 }}>{row.wktpulang}</td>
             </tr>
           ))}
         </tbody>

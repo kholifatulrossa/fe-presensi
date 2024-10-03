@@ -19,6 +19,8 @@ import DraftsIcon from '@mui/icons-material/Drafts'
 import ClassRoundedIcon from '@mui/icons-material/ClassRounded'
 
 const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, children }) => {
+
+  
   return (
     <ListItem
       sx={{
@@ -34,12 +36,11 @@ const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, childr
             width: 220,
             py: 1.3,
             mt: 1,
-            transition: '0.1s ease-in-out',
             '&:hover': {
-              bgcolor: '#4D91FF !important',
+              bgcolor: '#BEBEBE !important',
+              opacity: '0.5',
               '& .MuiTypography-root, & .MuiSvgIcon-root': {
                 color: selected ? 'white' : 'white',
-                transition: '0.1s ease-in-out',
               },
             },
           }}>
@@ -64,7 +65,7 @@ const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, childr
   );
 };
 
-export default function Sidebar({ showDashboardOnly }) {
+export default function Sidebar({ showDashboardOnly, basePath }) {
   const [selected, setSelected] = useState(false);
   const [showChip, setShowChip] = useState(true);
 
@@ -145,7 +146,7 @@ export default function Sidebar({ showDashboardOnly }) {
           }}>
           <div>
             {showDashboardOnly ? (
-              <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href="/admin" selected={selected === 'home'} onClick={() => handleClick('home')} />
+              <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href={`${basePath}`} selected={selected === 'home'} onClick={() => handleClick('home')} />
             ) : (
               <>
                 <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href="/admin" selected={selected === 'home'} onClick={() => handleClick('home')} />
@@ -158,9 +159,13 @@ export default function Sidebar({ showDashboardOnly }) {
       </Box>
 
       <Divider />
-      <Link to="/admin/profil" style={{ textDecoration: 'none', color: 'blue' }}>
+      <Link to={`${basePath}/profil`} style={{ textDecoration: 'none', color: 'blue' }}>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', height: 60 }}>
-          <Avatar variant="outlined" size="lg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286" />
+          <Avatar
+            variant="outlined"
+            size="lg"
+            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
+          />
           <Box sx={{ minWidth: 0, flex: 1 }}>
             <Typography level="title-lg">Siriwat K.</Typography>
             <Typography level="body-md">siriwatk@test.com</Typography>

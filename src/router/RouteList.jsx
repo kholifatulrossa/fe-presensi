@@ -5,6 +5,9 @@ import DashAdmin from '../pages/admin/DashAdmin';
 import { Perizinan } from '../pages/admin/Perizinan';
 import { DataKelas } from '../pages/admin/DataKelas';
 import NotificationPopup from '../pages/components/Alert';
+import { Profil } from '../pages/users/Profil';
+import { Dashboard } from '../pages/Dashboard';
+import { DashUsers } from '../pages/users/DashUsers';
 
 const routes = createBrowserRouter([
   {
@@ -21,13 +24,17 @@ const routes = createBrowserRouter([
     ],
   },
   {
-    path :'/dashboard',
-    element: <DashboardPage/>
+    path :'/users',
+    element: <Dashboard/>,
+    children: [
+      { path: '/users', element: <DashUsers/> },
+      { path: '/users/profil', element: <Profil/> }
+    ]
   },
   {
     path: '/alert',
     element: <NotificationPopup/>
-  }
+  },
 ]);
 
 export default routes;
