@@ -20,7 +20,7 @@ function exportToPDF(data) {
   doc.text('Data Presensi', 14, 10);
 
   // Define the table structure
-  const tableColumn = ["No", "Tanggal", "Nama", "Kelas", "Keterangan", "Hadir", "Pulang"];
+  const tableColumn = ['No', 'Tanggal', 'Nama', 'Kelas', 'Keterangan', 'Hadir', 'Pulang'];
   const tableRows = [];
 
   // Loop through the rows and push the data to tableRows

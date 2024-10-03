@@ -23,6 +23,7 @@ export default function Header() {
           width: '100%',
           borderBottom: '1px solid #B4B4B8',
           alignItems: 'center',
+          position: 'sticky',
           height: 40,
           display: 'flex',
           py: 2,
