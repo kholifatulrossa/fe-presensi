@@ -8,11 +8,15 @@ export default function Header() {
     switch (location.pathname) {
       case '/admin/perizinan':
         return 'Permohonan Izin';
-      case '/admin/', '/users/':
-        return 'Dashboard';
+      case '/admin':
+      case '/admin/':
+      case '/users':
+      case '/users/':
+            return 'Dashboard';
       case '/admin/dataKelas':
         return 'Data Kelas';
-      case '/admin/profil', '/users/profil':
+      case '/admin/profil':
+      case '/users/profil':
         return "Profil"
     }
   };

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation, Link } from 'react-router-dom'; // Import useLocation
 import GlobalStyles from '@mui/joy/GlobalStyles';
 import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
@@ -6,84 +7,57 @@ import Chip from '@mui/joy/Chip';
 import Divider from '@mui/joy/Divider';
 import IconButton from '@mui/joy/IconButton';
 import List from '@mui/joy/List';
-import { Link } from 'react-router-dom';
 import ListItem from '@mui/joy/ListItem';
 import ListItemButton, { listItemButtonClasses } from '@mui/joy/ListItemButton';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import '@fontsource/poppins';
-import Logo from '../../assets/img/logo.png';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import DraftsIcon from '@mui/icons-material/Drafts'
-import ClassRoundedIcon from '@mui/icons-material/ClassRounded'
+import DraftsIcon from '@mui/icons-material/Drafts';
+import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
+import Logo from '../../assets/img/logo.png';
 
-const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, children }) => {
-
-  
-  return (
-    <ListItem
-      sx={{
-        gap: 1.5,
-      }}>
-      <Link to={href} style={{ textDecoration: 'none', display: 'flex' }}>
-        <ListItemButton
-          onClick={onClick}
-          component={href ? 'a' : 'div'}
-          href={href}
-          sx={{
-            bgcolor: selected ? '#4D91FF' : 'white',
-            width: 220,
-            py: 1.3,
-            mt: 1,
-            '&:hover': {
-              bgcolor: '#BEBEBE !important',
-              opacity: '0.5',
-              '& .MuiTypography-root, & .MuiSvgIcon-root': {
-                color: selected ? 'white' : 'white',
-              },
+const ListItemWithIcon = ({ IconComponent, text, href, onClick, selected, children }) => (
+  <ListItem sx={{ gap: 1.5 }}>
+    <Link to={href} style={{ textDecoration: 'none', display: 'flex' }}>
+      <ListItemButton
+        onClick={onClick}
+        component='a'
+        href={href}
+        sx={{
+          bgcolor: selected ? '#4D91FF' : 'white', // Adjust background color
+          width: 220,
+          py: 1.3,
+          mt: 1,
+          '&:hover': {
+            bgcolor: '#BEBEBE !important',
+            opacity: '0.5',
+            '& .MuiTypography-root, & .MuiSvgIcon-root': {
+              color: selected ? 'white' : 'white',
             },
-          }}>
-          <IconComponent
-            sx={{
-              fontSize: '20px',
-              color: selected ? 'white' : 'black',
-            }}
-          />
-          <Typography
-            sx={{
-              color: selected ? 'white' : 'black',
-            }}
-            className="MuiTypography-root"
-            level="title-sm">
-            {text}
-          </Typography>
-          {children}
-        </ListItemButton>
-      </Link>
-    </ListItem>
-  );
-};
+          },
+        }}>
+        <IconComponent sx={{ fontSize: '20px', color: selected ? 'white' : 'black' }} />
+        <Typography sx={{ color: selected ? 'white' : 'black' }} level="title-sm">
+          {text}
+        </Typography>
+        {children}
+      </ListItemButton>
+    </Link>
+  </ListItem>
+);
 
-export default function Sidebar({ showDashboardOnly, basePath }) {
-  const [selected, setSelected] = useState(false);
-  const [showChip, setShowChip] = useState(true);
+export default function Sidebar({ showDashboardOnly, basePath, nameprofile, classprofile, photo }) {
+  const location = useLocation(); // Get the current URL
 
-  const handleClick = (item) => {
-    setSelected(item);
-    if (item === 'users') {
-      setShowChip(false);
-    }
-  };
+  // Handle selection of active menu based on current URL
+  const isSelected = (path) => location.pathname === path;
 
   return (
     <Sheet
       className="Sidebar"
       sx={{
         position: { xs: 'fixed', md: 'sticky' },
-        transform: {
-          md: 'none',
-        },
         transition: 'transform 0.4s, width 0.4s',
         zIndex: 10000,
         height: '100dvh',
@@ -100,24 +74,6 @@ export default function Sidebar({ showDashboardOnly, basePath }) {
         overflowY: 'auto',
         boxSizing: 'border-box',
       }}>
-      <Box
-        className="Sidebar-overlay"
-        sx={{
-          position: 'fixed',
-          zIndex: 9998,
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark backdrop
-          transition: 'opacity 0.4s',
-          transform: {
-            xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--Sidebar-width, 0px)))',
-            lg: 'translateX(-100%)',
-          },
-        }}
-        onClick={() => closeSidebar()}
-      />
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'center', pr: 2 }}>
         <Box variant="soft">
           <img src={Logo} alt="Logo" style={{ width: '38px', height: 'auto' }} />
@@ -133,9 +89,6 @@ export default function Sidebar({ showDashboardOnly, basePath }) {
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          [`& .${listItemButtonClasses.root}`]: {
-            gap: 2.5,
-          },
         }}>
         <List
           size="sm"
@@ -146,12 +99,36 @@ export default function Sidebar({ showDashboardOnly, basePath }) {
           }}>
           <div>
             {showDashboardOnly ? (
-              <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href={`${basePath}`} selected={selected === 'home'} onClick={() => handleClick('home')} />
+              <ListItemWithIcon
+                IconComponent={HomeRoundedIcon}
+                text="Dashboard"
+                href={basePath}
+                selected={isSelected(`${basePath}`)} // Check if the current URL is for the dashboard
+                onClick={() => handleClick('home')}
+              />
             ) : (
               <>
-                <ListItemWithIcon IconComponent={HomeRoundedIcon} text="Dashboard" href="/admin" selected={selected === 'home'} onClick={() => handleClick('home')} />
-                <ListItemWithIcon IconComponent={DraftsIcon} text="Permohonan izin" href="/admin/perizinan" selected={selected === 'perizinan'} onClick={() => handleClick('perizinan')} />
-                <ListItemWithIcon IconComponent={ClassRoundedIcon} text="Data Kelas" href="/admin/dataKelas" selected={selected === 'dataKelas'} onClick={() => handleClick('dataKelas')} />
+                <ListItemWithIcon
+                  IconComponent={HomeRoundedIcon}
+                  text="Dashboard"
+                  href="/admin"
+                  selected={isSelected('/admin')} // Check if current URL is /admin
+                  onClick={() => handleClick('home')}
+                />
+                <ListItemWithIcon
+                  IconComponent={DraftsIcon}
+                  text="Permohonan izin"
+                  href="/admin/perizinan"
+                  selected={isSelected('/admin/perizinan')} // Check if current URL is /admin/perizinan
+                  onClick={() => handleClick('perizinan')}
+                />
+                <ListItemWithIcon
+                  IconComponent={ClassRoundedIcon}
+                  text="Data Kelas"
+                  href="/admin/dataKelas"
+                  selected={isSelected('/admin/dataKelas')} // Check if current URL is /admin/dataKelas
+                  onClick={() => handleClick('dataKelas')}
+                />
               </>
             )}
           </div>
@@ -161,16 +138,16 @@ export default function Sidebar({ showDashboardOnly, basePath }) {
       <Divider />
       <Link to={`${basePath}/profil`} style={{ textDecoration: 'none', color: 'blue' }}>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', height: 60 }}>
-          <Avatar
-            variant="outlined"
-            size="lg"
-            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-          />
-          <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Typography level="title-lg">Siriwat K.</Typography>
-            <Typography level="body-md">siriwatk@test.com</Typography>
+          <Avatar variant="soft" size="lg" src={photo} />
+          <Box sx={{ minWidth: 0, flex: 1, pl: 1 }}>
+            <Typography level="title-lg" sx={{ fontWeight: 600, fontSize: 15 }}>
+              {nameprofile}
+            </Typography>
+            <Typography level="body-md" sx={{ fontWeight: 500, fontSize: 13 }}>
+              {classprofile}
+            </Typography>
           </Box>
-          <IconButton size="md" variant="plain" color="danger">
+          <IconButton size="md" variant="plain" color="primary">
             <LogoutRoundedIcon />
           </IconButton>
         </Box>

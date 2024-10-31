@@ -4,10 +4,11 @@ import DashboardPage from '../pages/MainDashboard';
 import DashAdmin from '../pages/admin/DashAdmin';
 import { Perizinan } from '../pages/admin/Perizinan';
 import { DataKelas } from '../pages/admin/DataKelas';
-import NotificationPopup from '../pages/components/Alert';
 import { Profil } from '../pages/users/Profil';
 import { Dashboard } from '../pages/Dashboard';
 import { DashUsers } from '../pages/users/DashUsers';
+import ProtectedRoute from './ProtectedRoutes';
+import { ProfilAdmin } from '../pages/admin/Profil';
 
 const routes = createBrowserRouter([
   {
@@ -16,24 +17,63 @@ const routes = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: <DashboardPage />,
+    element: <DashboardPage />, // Parent layout
     children: [
-      { path: '/admin', element: <DashAdmin /> },
-      { path: '/admin/perizinan', element: <Perizinan /> },
-      { path: '/admin/dataKelas', element: <DataKelas /> },
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <DashAdmin />
+          </ProtectedRoute>
+        ), // Protected route
+      },
+      {
+        path: 'perizinan',
+        element: (
+          <ProtectedRoute>
+            <Perizinan />
+          </ProtectedRoute>
+        ), // Protected route
+      },
+      {
+        path: 'dataKelas',
+        element: (
+          <ProtectedRoute>
+            <DataKelas />
+          </ProtectedRoute>
+        ), // Protected route
+      },
+      {
+        path: 'profil',
+        element: (
+          <ProtectedRoute>
+            <ProfilAdmin/>
+          </ProtectedRoute>
+        ), // Protected route
+      },
     ],
   },
   {
-    path :'/users',
-    element: <Dashboard/>,
+    path: '/users',
+    element: <Dashboard />,
     children: [
-      { path: '/users', element: <DashUsers/> },
-      { path: '/users/profil', element: <Profil/> }
-    ]
-  },
-  {
-    path: '/alert',
-    element: <NotificationPopup/>
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <DashUsers />
+          </ProtectedRoute>
+        ), // Protected route
+      },
+      {
+        path: 'profil',
+        element: (
+          <ProtectedRoute>
+            <Profil />
+          </ProtectedRoute>
+        ), // Protected route
+      },
+    ],
   },
 ]);
 

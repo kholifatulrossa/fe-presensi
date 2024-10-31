@@ -9,6 +9,8 @@ import axios from 'axios';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import Menu from '@mui/joy/Menu';
 import MenuItem from '@mui/joy/MenuItem';
+import Avatar from '@mui/joy/Avatar';
+import EditSiswa from '../components/EditSiswa';
 
 export const DataKelas = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,12 +18,26 @@ export const DataKelas = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
   const ref = useRef(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const [selectedStudent, setSelectedStudent] = useState(''); // Menyimpan siswa yang dipilih
+  const [isAvataropen, setAvatarOpen] = useState(false)
+  
 
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleAvatarClick = () => {
+    setAvatarOpen(true)
+  }
+
+  const handleAvatarUnclick = () => {
+    setAvatarOpen(false)
+  }
+
+  const handleMenuToggle = (event, studentId) => {
+    setAnchorEl((prev) => (prev ? null : event.currentTarget));
+    setSelectedStudent(studentId); // Simpan ID siswa yang dipilih
   };
+  
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -77,20 +93,29 @@ export const DataKelas = () => {
     };
   }, [open]);
 
-  useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/api/siswa'); // Replace with your API URL
-        setStudents(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
+      const guru_id = localStorage.getItem('guru_id')
+      try{
+        const response1 = await axios.get(`http://localhost:8000/api/guru/${guru_id}/`)
+        const data1 = response1.data
+        try {
+          const kelas_id = data1.id
+          const response = await axios.get('http://localhost:8000/api/siswa/', { params: { kelas_id: kelas_id } }); // Replace with your API URL
+          setStudents(response.data.output);
+          setLoading(false);
+        } catch (error) {
+          setError(error);
+          setLoading(false);
+        }
+      }catch(error){
+        console.error('Error cant get the kelas id from guru', error)
       }
     };
+  useEffect(() => {
+    fetchData()
+  }, [])
 
-    fetchData();
-  }, []);
+
 
   if (loading) return <Typography>Loading...</Typography>;
   if (error) return <Typography>Error fetching data: {error.message}</Typography>;
@@ -99,20 +124,6 @@ export const DataKelas = () => {
     <>
       <Box ref={ref} sx={{ backgroundColor: '#F5F5FF', width: '100%', height: '100vh' }}>
         <Box sx={{ p: 3 }}>
-          <Typography
-            level="p"
-            sx={{
-              fontWeight: '600',
-              fontSize: 20,
-              color: 'black',
-              fontFamily: 'Poppins',
-            }}
-          >
-            Data siswa kelas...
-          </Typography>
-          <Typography sx={{ color: '#1B1F3B', fontWeight: '440', fontSize: 16, fontFamily: 'poppins' }}>
-            Berikut adalah data siswa kelas ... tahun pelajaran ...
-          </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button 
               onClick={handleOpen} 
@@ -131,7 +142,7 @@ export const DataKelas = () => {
             >
               Tambah Data
             </Button>
-            <FormSiswa isOpen={isOpen} onClose={handleClose} />
+            <FormSiswa isOpen={isOpen} onClose={handleClose} refreshStudents={fetchData}/>
           </Box>
         </Box>
         <Box 
@@ -141,7 +152,7 @@ export const DataKelas = () => {
             alignItems: 'center', 
             gap: 3, 
             flexWrap: 'wrap', 
-            maxWidth: '90vw', 
+            maxWidth: '100vw', 
             px: 3.5
           }}
         >
@@ -151,43 +162,23 @@ export const DataKelas = () => {
               sx={{ 
                 backgroundColor: 'white', 
                 boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, 0.1)', 
-                width: '22vw', 
+                width: '16.9vw', 
                 padding: '30px 30px', 
                 borderRadius: 8
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', pb: 2.5, justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <img src={Image} alt="student" style={{ borderRadius: '100%', width: '60px' }}/>                  
+                <Avatar alt="" style={{ width: '4vw', height: '4vw', borderRadius: '50%', cursor: 'pointer' }}
+                onClick={() => { setSelectedStudent(student.id); handleAvatarClick(); }} />
+                <EditSiswa isOpen={isAvataropen} onClose={handleAvatarUnclick} studentId={selectedStudent} refreshStudents={fetchData}/>
                 <Typography sx={{ fontWeight: 'bold', fontSize: 20, pl: 3, fontFamily: 'poppins' }}>
                   {student.nama}
                 </Typography>
                 </Box>
-              <MoreVertRoundedIcon 
-              aria-controls={open ? 'dropdown-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleMenuOpen}
-              sx={{ cursor: 'pointer' }}
-              />
-            <Menu
-            id="dropdown-menu"
-            anchorEl={anchorEl}
-              open={open}
-              onClose={handleMenuClose}
-              sx={{ backgroundColor: 'white', border: 'none' }}
-            >
-              {/* Dropdown items */}
-              <MenuItem sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-                Edit
-              </MenuItem>
-              <MenuItem sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-                Hapus
-              </MenuItem>
-            </Menu>
               </Box>
               <Box sx={{ display: 'flex', gap: 1, color: '#6f707d', pb: 1 }}>
-                <PersonRoundedIcon sx={{ pl: 2 }} />
+                <PersonRoundedIcon sx={{ pl: 2}} />
                 <Typography sx={{ fontFamily: 'poppins' }}>{student.nisn}</Typography>  
               </Box>
               <Box sx={{ display: 'flex', gap: 1, color: '#6f707d' }}>

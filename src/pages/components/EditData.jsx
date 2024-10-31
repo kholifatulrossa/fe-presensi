@@ -3,11 +3,12 @@ import { Box, Input, Select, Option, Typography, Button } from '@mui/joy';
 import axios from 'axios';
 import '@fontsource/poppins'
 
-export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
+export default function EditData({ isOpen, onClose, refreshStudents }) {
   const [classes, setClasses] = React.useState([]);
   const [filteredClasses, setFilteredClasses] = React.useState([]);
+  const [userId, setUserId] = React.useState('')
 
-  const [nisn, setNisn] = React.useState('');
+  const [nip, setNip] = React.useState('');
   const [nama, setNama] = React.useState('');
   const [kelas_id, setKelasId] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -20,6 +21,14 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
     }
     return true;
   };
+
+  React.useEffect(() => {
+    const fetchUserId = async() => {
+        const guru_id = localStorage.getItem('guru_id')
+        const response = await axios.get(`http://localhost:8000/api/user/?guru_id=${guru_id}`)
+        setUserId(response.data[0].id)
+}
+fetchUserId()}, [])
 
   React.useEffect(() => {
     const guru_id = localStorage.getItem('guru_id'); // Fetch guru_id from localStorage
@@ -48,15 +57,37 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
     fetchGuruAndClasses();
   }, []);
 
-  const handleTambah = async () => {
-    if (!nisn) {
-      alert('Masukkan NISN');
+  React.useEffect(() => {
+    const fetchGuruData = async () => {
+      const guru_id = localStorage.getItem('guru_id')
+      if (isOpen) {
+        try {
+          const response = await axios.get(`http://localhost:8000/api/guru/${guru_id}/`);
+          const guruData = response.data;
+
+          // Populate the state with the fetched student data
+          setNip(guruData.nip);
+          setNama(guruData.nama);
+          setKelasId(guruData.kelas_id);
+        } catch (error) {
+          console.error('Error fetching student data:', error.response?.data || error.message);
+        }
+      }
+    };
+
+    fetchGuruData();
+  }, [isOpen]); // Depend on isOpen and studentId
+
+  const handleEdit = async () => {
+    if (!nip) {
+      alert('Masukkan NIP');
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/siswa/', {
-        nisn: nisn,
+      const guru_id = localStorage.getItem('guru_id')
+      const response = await axios.patch(`http://localhost:8000/api/guru/${guru_id}/`, {
+        nip: nip,
         nama: nama,
         kelas_id: kelas_id,
       }, {
@@ -67,42 +98,44 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
       
       const data = response.data;
       console.log(data);
-    
-      // Check if `data` is not empty or has a valid `id`
-      if (data.status == 200 | 201) {
-        try {
-          const siswa_id = data.id;
-          const response2 = await axios.post('http://localhost:8000/api/user/', {
-            password: confirm,
-            siswa_id: siswa_id,
-          }, {
-            headers: { 'Content-Type': 'application/json' },
-          });
-          
-          const data2 = response2.data;
-          
-          console.log(data2);
-          if(data2.status == 200 | 201){
-            alert('Berhasil menambahkan data siswa')
-          }
-          refreshStudents()
-        } catch (eror) { // Catch and log error for the second request
-          alert('Gagal menambahkan siswa')
-          console.error('Error in creating user:', eror.response?.data || eror.message);
+      if (data.status == 200 | 201 ) {
+        alert('Berhasil mengubah data guru')
+        if(confirm){
+            try {
+                console.log('ini user ID: ', userId)
+                const response2 = await axios.patch(`http://localhost:8000/api/user/${userId}/`, {
+                    password: confirm,
+                    guru_id: guru_id,
+                }, {
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                
+                const data2 = response2.data;
+                
+                console.log(data2);
+                if(data2.status == 200 | 201){
+                    alert('Berhasil mengubah password ')
+                }
+                return
+            } catch (eror) { // Catch and log error for the second request
+            alert('Gagal mengubah data')
+            console.error('Error in editing user:', eror);
+            }
         }
       } else {
-        console.error(error.message);
+        console.log(response.data);
       }
     } catch (error) {
-      console.error('Error in creating siswa:', error.response?.data || error.message);
+      console.error('Error in editing data:', error.response?.data || error.message);
     }
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent form reload
-    if (validatePass()) {
-      handleTambah(); // Only call handleTambah if passwords match
-      console.log('Form submitted');
+      e.preventDefault(); // Prevent form reload
+      if (validatePass()) {
+          handleEdit(); // Only call handleTambah if passwords match
+          console.log('Form submitted');
+          refreshStudents()
       onClose();
     }
   };
@@ -143,9 +176,9 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.9 }}>
             <Input
-              value={nisn}
-              onChange={(e) => setNisn(e.target.value)}
-              placeholder="NISN"
+              value={nip}
+              onChange={(e) => setNip(e.target.value)}
+              placeholder="NIP"
               type="number"
               required
               fullWidth
@@ -202,7 +235,6 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               type="password"
-              required
               fullWidth
               sx={{
                 py: 2,
@@ -218,7 +250,6 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="Confirm Password"
               type="password"
-              required
               fullWidth
               sx={{
                 py: 2,

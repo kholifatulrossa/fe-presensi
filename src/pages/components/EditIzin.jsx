@@ -6,7 +6,7 @@ import DeleteRoundedIcon  from '@mui/icons-material/DeleteRounded';
 import { ErrorRounded, SettingsInputSvideoRounded } from '@mui/icons-material';
 import axios from 'axios';
 
-export default function PopUpForm({ isOpen, onClose, refreshStudents }) { // Menerima prop isOpen untuk kontrol luar
+export default function EditIzin({ isOpen, onClose, refreshStudents, izinId }) { // Menerima prop isOpen untuk kontrol luar
   const [classes, setClasses] = React.useState([]);
   const [nama, setNama] = React.useState('');
   const [tanggal, setTanggal] = React.useState('');
@@ -45,14 +45,37 @@ export default function PopUpForm({ isOpen, onClose, refreshStudents }) { // Men
     fetchClasses();
   }, [kelasId]);
 
-  const handleTambah = async () => {
+  
+  React.useEffect(() => {
+    const fetchIzindata = async () => {
+      if (isOpen && izinId) {
+        console.log('ini izin id: ', izinId)
+        try {
+          const response = await axios.get(`http://localhost:8000/api/kehadiran/${izinId}/`);
+          const studentData = response.data;
+          console.log('Response data: ', studentData)
+
+          // Populate the state with the fetched student data
+          setNama(studentData.siswa_id);
+          setTanggal(studentData.tanggal);
+          setIzin(studentData.status);
+          setKeterangan(studentData.keterangan);
+        } catch (error) {
+          console.error('Error fetching student data:', error.response?.data || error.message);
+        }
+      }
+    };
+
+    fetchIzindata();
+  }, [isOpen, izinId]); // Depend on isOpen and studentId
+
+  const handleEdit = async () => {
     if (!nama) {
       alert('Masukkan nama siswa');
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8000/api/kehadiran/', {
-        siswa_id: nama,       // Ensure correct student ID is sent
+      const response = await axios.patch(`http://localhost:8000/api/kehadiran/${izinId}/`, {
         tanggal: tanggal,     // Date value
         status: izin,         // Attendance status (sakit/izin)
         keterangan: keterangan, // Additional notes
@@ -65,24 +88,24 @@ export default function PopUpForm({ isOpen, onClose, refreshStudents }) { // Men
       });
   
       if (response.status === 200 | 201) {
-        alert('Berhasil menambahkan data');
+        alert('Berhasil mengubah data');
         refreshStudents()
       } else {
-        alert('Gagal menambahkan data');
+        alert('Gagal mengubah data');
       }
     } catch (error) {
       if (error.response) {
         console.error('Error response:', error.response.data);
         alert(`Error: ${error.response.data.message || 'Something went wrong'}`);
       } else {
-        console.error('Error menambahkan siswa:', error.message);
+        console.error('Error mengubah data:', error.message);
       }
     }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    handleTambah()
+    handleEdit()
     console.log('Form submitted');
     onClose(); // Menutup modal setelah submit
   };
@@ -118,13 +141,13 @@ export default function PopUpForm({ isOpen, onClose, refreshStudents }) { // Men
           onSubmit={handleSubmit}
         >
           <Typography fontWeight={700} fontSize={20} pb={3} sx={{ color: 'black', fontFamily: 'poppins' }}>
-            Form Permohonan Izin
+            Form Edit Izin
           </Typography>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, border: 'none' }}>
           <Select
               value={nama}
-              onChange={(event, newValue) => setNama(newValue)}  // Menggunakan newValue langsung
+              onChange={(event, newValue) => setNama(newValue)} // Use newValue from MUI's Select
               placeholder="nama"
               required
               fullWidth
@@ -164,6 +187,7 @@ export default function PopUpForm({ isOpen, onClose, refreshStudents }) { // Men
                 sx={{ px: 4, display: 'flex', gap: 2, color: 'black', fontWeight: 600 }}
               />
             </RadioGroup>
+
             <Textarea
               value={keterangan}
               onChange={(e) => setKeterangan(e.target.value)}
@@ -174,6 +198,7 @@ export default function PopUpForm({ isOpen, onClose, refreshStudents }) { // Men
               sx={{ py: 2, backgroundColor: '#D9D9D9', color: '#696969', border: 'none', fontFamily: 'poppins', fontWeight: 400, pb: 10 }}
             />
           </Box>
+
           <Box sx={{ gap: 1, py: 3 }}>
             <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
               <Button variant="outlined" sx={{ color: 'gray', border: '2px solid gray', fontFamily: 'poppins', '&:hover': { backgroundColor: 'gray', color: 'white'}}} onClick={onClose}>Cancel</Button>
@@ -190,7 +215,7 @@ export default function PopUpForm({ isOpen, onClose, refreshStudents }) { // Men
                   '&:hover': { backgroundColor: '#12B104' },
                 }}
               >
-                Submit
+                Edit
               </Button>
             </Box>
           </Box>

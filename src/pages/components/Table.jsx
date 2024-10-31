@@ -27,9 +27,9 @@ function exportToPDF(data) {
   data.forEach((row, index) => {
     const rowData = [
       index + 1,  // No
-      row.tanggal,
+      row.tanggal.slice(0, 10),
       row.siswa.nama,
-      row.siswa.kelasId,
+      row.siswa.kelas.nama,
       row.status,
       row.wktdatang,
       row.wktpulang
@@ -45,7 +45,7 @@ function exportToPDF(data) {
   });
 
   // Save the PDF
-  doc.save('presensi-data.pdf');
+  doc.save('presensi-data-bulan-' + (new Date().getMonth() + 1) + '.pdf');
 }
 
 export default function BasicTable({ data = [], showFilterButton = true, showSearchButton = true, showPDFExport = true }) {
@@ -65,36 +65,53 @@ export default function BasicTable({ data = [], showFilterButton = true, showSea
   };
 
   // Helper function to convert date from 'DD-MM-YYYY' to 'YYYY-MM-DD'
-  const convertDate = (date) => {
-    const [day, month, year] = date.split('-');
-    return `${year}-${month}-${day}`;
-  };
+// Helper function to convert date from 'DD-MM-YYYY' to 'YYYY-MM-DD'
+const convertDate = (date) => {
+  const [day, month, year] = date.split('-');
+  return `${year}-${month}-${day}`;
+};
 
-  // Handle sorting by name A-Z, Z-A
-  const sortByNameAsc = () => {
-    const sortedRows = [...filteredRows].sort((a, b) => a.nama.localeCompare(b.nama));
-    setFilteredRows(sortedRows);
-    handleClose();
-  };
+// Handle sorting by name A-Z, Z-A
+const sortByNameAsc = () => {
+  const sortedRows = [...filteredRows].sort((a, b) => {
+    const nameA = a.siswa.nama.toLowerCase();  // Convert to lower case for case-insensitive sorting
+    const nameB = b.siswa.nama.toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+  setFilteredRows(sortedRows);
+  handleClose();
+};
 
-  const sortByNameDesc = () => {
-    const sortedRows = [...filteredRows].sort((a, b) => b.nama.localeCompare(a.nama));
-    setFilteredRows(sortedRows);
-    handleClose();
-  };
+const sortByNameDesc = () => {
+  const sortedRows = [...filteredRows].sort((a, b) => {
+    const nameA = a.siswa.nama.toLowerCase();
+    const nameB = b.siswa.nama.toLowerCase();
+    return nameB.localeCompare(nameA);
+  });
+  setFilteredRows(sortedRows);
+  handleClose();
+};
 
-  // Handle sorting by date (Latest, Recent)
-  const sortByDateLatest = () => {
-    const sortedRows = [...filteredRows].sort((a, b) => new Date(convertDate(b.date)) - new Date(convertDate(a.date)));
-    setFilteredRows(sortedRows);
-    handleClose();
-  };
+// Handle sorting by date (Latest, Recent)
+const sortByDateLatest = () => {
+  const sortedRows = [...filteredRows].sort((a, b) => {
+    const dateA = new Date(convertDate(b.tanggal));
+    const dateB = new Date(convertDate(a.tanggal));
+    return dateA - dateB;
+  });
+  setFilteredRows(sortedRows);
+  handleClose();
+};
 
-  const sortByDateRecent = () => {
-    const sortedRows = [...filteredRows].sort((a, b) => new Date(convertDate(a.date)) - new Date(convertDate(b.date)));
-    setFilteredRows(sortedRows);
-    handleClose();
-  };
+const sortByDateRecent = () => {
+  const sortedRows = [...filteredRows].sort((a, b) => {
+    const dateA = new Date(convertDate(a.tanggal));
+    const dateB = new Date(convertDate(b.tanggal));
+    return dateA - dateB;
+  });
+  setFilteredRows(sortedRows);
+  handleClose();
+};
 
   // Search filter logic
   const handleSearch = (event) => {
@@ -107,7 +124,7 @@ export default function BasicTable({ data = [], showFilterButton = true, showSea
       row.status.toLowerCase().includes(query) 
     );
 
-    setFilteredRows(filteredData);
+    setFilteredRows(filteredData.length > 0 ? filteredData : data);
   };
 
   // Handle click outside the dropdown menu
@@ -135,7 +152,7 @@ export default function BasicTable({ data = [], showFilterButton = true, showSea
           Tabel data Presensi
         </Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
-          { showFilterButton && (
+          {showFilterButton && (
             <Button
               sx={{
                 padding: '14px 30px',
@@ -152,29 +169,29 @@ export default function BasicTable({ data = [], showFilterButton = true, showSea
             >
               Filter <span style={{ display: 'flex', alignItems: 'center' }}><KeyboardArrowDownRoundedIcon /></span>
             </Button>
-            )}
-            <Menu
+          )}
+          <Menu
             id="dropdown-menu"
             anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              sx={{ backgroundColor: 'white', border: 'none' }}
-            >
-              {/* Dropdown items */}
-              <MenuItem onClick={sortByNameAsc} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-                A → Z
-              </MenuItem>
-              <MenuItem onClick={sortByNameDesc} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-                Z → A
-              </MenuItem>
-              <MenuItem onClick={sortByDateLatest} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-                Tanggal Terbaru
-              </MenuItem>
-              <MenuItem onClick={sortByDateRecent} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
-                Tanggal Terlama
-              </MenuItem>
-            </Menu>
-            { showSearchButton && (
+            open={open}
+            onClose={handleClose}
+            sx={{ backgroundColor: 'white', border: 'none' }}
+          >
+            {/* Dropdown items */}
+            <MenuItem onClick={sortByNameAsc} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
+              A → Z
+            </MenuItem>
+            <MenuItem onClick={sortByNameDesc} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
+              Z → A
+            </MenuItem>
+            <MenuItem onClick={sortByDateLatest} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
+              Tanggal Terbaru
+            </MenuItem>
+            <MenuItem onClick={sortByDateRecent} sx={{ color: 'black', '&:hover': { backgroundColor: '#f5f5f9' } }}>
+              Tanggal Terlama
+            </MenuItem>
+          </Menu>
+          {showSearchButton && (
             <Box
               sx={{ backgroundColor: '#f5f5f9', display: 'flex', alignItems: 'center', border: 'none', width: '15vw', borderRadius: 6 }}
             >
@@ -186,12 +203,12 @@ export default function BasicTable({ data = [], showFilterButton = true, showSea
                 sx={{ fontFamily: 'poppins', fontSize: 15, fontWeight: 600, boxShadow: 'none', border: 'none', bgcolor: '#f5f5f9', color: 'gray', width: '100%', height: '100%', mx: 'auto' }}
               />
             </Box>
-              )}
-              { showPDFExport && (
+          )}
+          {showPDFExport && (
             <Button onClick={() => exportToPDF(filteredRows)} sx={{ padding: '14px 30px', color: 'white', backgroundColor: '#F15C5C', '&:hover': { backgroundColor: '#DF5A5A' } }}>
               <img src={PDFIcon} alt="PDF icon" style={{ width: '25px', height: '25px', marginRight: '10px' }} />Ekspor PDF
             </Button>
-              )}
+          )}
         </Box>
       </Box>
       <Table aria-label="basic table" sx={{ border: '3px solid #dcdfe2', borderRadius: 8 }}>
@@ -208,14 +225,14 @@ export default function BasicTable({ data = [], showFilterButton = true, showSea
         </thead>
         <tbody>
           {filteredRows.map((row, index) => (
-            <tr key={index} style={{ textAlign: 'left' }}>
+            <tr key={index}>
               <td style={{ textAlign: 'center' }}>{index + 1}</td>
-              <td style={{ fontWeight: 500, color: '#696969', width: '100%' }}>{row.tanggal.slice(0, 10)}</td>
-              <td style={{ fontWeight: 500 }}>{row.siswa.nama}</td>
-              <td style={{ fontWeight: 500 }}>{row.siswa.kelasId}</td>
-              <td style={{ fontWeight: 500 }}>{row.status}</td>
-              <td style={{ fontWeight: 500 }}>{row.wktdatang}</td>
-              <td style={{ fontWeight: 500 }}>{row.wktpulang}</td>
+              <td>{row.tanggal.slice(0, 10)}</td>
+              <td>{row.siswa.nama}</td>
+              <td>{row.siswa.kelas.nama}</td>
+              <td>{row.status}</td>
+              <td>{row.wktdatang}</td>
+              <td>{row.wktpulang}</td>
             </tr>
           ))}
         </tbody>

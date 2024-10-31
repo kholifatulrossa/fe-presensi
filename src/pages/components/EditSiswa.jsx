@@ -1,25 +1,15 @@
 import * as React from 'react';
 import { Box, Input, Select, Option, Typography, Button } from '@mui/joy';
 import axios from 'axios';
-import '@fontsource/poppins'
 
-export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
+export default function EditSiswa({ isOpen, onClose, studentId, refreshStudents }) {
   const [classes, setClasses] = React.useState([]);
   const [filteredClasses, setFilteredClasses] = React.useState([]);
+  const [id, setId] = React.useState('')
 
   const [nisn, setNisn] = React.useState('');
   const [nama, setNama] = React.useState('');
-  const [kelas_id, setKelasId] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [confirm, setConfirm] = React.useState('');
-
-  const validatePass = () => {
-    if (password !== confirm) {
-      alert('Konfirmasi password salah');
-      return false;
-    }
-    return true;
-  };
+  const [kelas_id, setKelasId] = React.useState('')
 
   React.useEffect(() => {
     const guru_id = localStorage.getItem('guru_id'); // Fetch guru_id from localStorage
@@ -48,14 +38,34 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
     fetchGuruAndClasses();
   }, []);
 
-  const handleTambah = async () => {
+  React.useEffect(() => {
+    const fetchStudentData = async () => {
+      if (isOpen && studentId) {
+        try {
+          const response = await axios.get(`http://localhost:8000/api/siswa/${studentId}/`);
+          const studentData = response.data;
+
+          // Populate the state with the fetched student data
+          setNisn(studentData.nisn);
+          setNama(studentData.nama);
+          setKelasId(studentData.kelas_id);
+        } catch (error) {
+          console.error('Error fetching student data:', error.response?.data || error.message);
+        }
+      }
+    };
+
+    fetchStudentData();
+  }, [isOpen, studentId]); // Depend on isOpen and studentId
+
+  const handleEdit = async () => {
     if (!nisn) {
       alert('Masukkan NISN');
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/siswa/', {
+      const response = await axios.patch(`http://localhost:8000/api/siswa/${studentId}/`, {
         nisn: nisn,
         nama: nama,
         kelas_id: kelas_id,
@@ -64,48 +74,47 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
           'Content-Type': 'application/json',
         },
       });
-      
       const data = response.data;
+      alert('Berhasil mengupdate data')
       console.log(data);
-    
-      // Check if `data` is not empty or has a valid `id`
-      if (data.status == 200 | 201) {
-        try {
-          const siswa_id = data.id;
-          const response2 = await axios.post('http://localhost:8000/api/user/', {
-            password: confirm,
-            siswa_id: siswa_id,
-          }, {
-            headers: { 'Content-Type': 'application/json' },
-          });
-          
-          const data2 = response2.data;
-          
-          console.log(data2);
-          if(data2.status == 200 | 201){
-            alert('Berhasil menambahkan data siswa')
-          }
-          refreshStudents()
-        } catch (eror) { // Catch and log error for the second request
-          alert('Gagal menambahkan siswa')
-          console.error('Error in creating user:', eror.response?.data || eror.message);
-        }
-      } else {
-        console.error(error.message);
-      }
+      refreshStudents()
     } catch (error) {
       console.error('Error in creating siswa:', error.response?.data || error.message);
+      alert('Gagal mengupdate data')
     }
   }
 
+
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent form reload
-    if (validatePass()) {
-      handleTambah(); // Only call handleTambah if passwords match
-      console.log('Form submitted');
-      onClose();
-    }
+    handleEdit(); // Only call handleTambah if passwords match
+    console.log('Form submitted');
+    onClose();
   };
+  React.useEffect(() => {
+    const ambilId = async () => {
+      const response = await axios.get(`http://localhost:8000/api/user/?siswa_id=${studentId}`)
+      setId(response.data[0].id)
+    }
+    ambilId()
+  }, [])
+
+  const handleDelete = async () => {
+    console.log('ini id murid: ', studentId)
+    try {
+      const response = await axios.delete(`http://localhost:8000/api/siswa/${studentId}/`)
+      if (response.status === 204){
+        onClose()
+        alert('Berhasil menghapus data siswa')
+        refreshStudents()
+        console.log('Berhasil hapus data siswa')
+      }else{
+        console.log(response.data)
+      }
+    }catch(error) {
+      console.error('Error ketika hapus data siswa: ', error)
+    }
+  }
 
   return (
     isOpen && (
@@ -120,7 +129,7 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          zIndex: 1000,
+          zIndex: 1010
         }}
       >
         <Box
@@ -196,44 +205,26 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
                 </Option>
               ))}
             </Select>
-
-            <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              type="password"
-              required
-              fullWidth
-              sx={{
-                py: 2,
-                backgroundColor: '#D9D9D9',
-                color: '#696969',
-                border: 'none',
-                fontFamily: 'poppins',
-                fontWeight: 500,
-              }}
-            />
-            <Input
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              placeholder="Confirm Password"
-              type="password"
-              required
-              fullWidth
-              sx={{
-                py: 2,
-                backgroundColor: '#D9D9D9',
-                color: '#696969',
-                border: 'none',
-                fontFamily: 'poppins',
-                fontWeight: 500,
-              }}
-            />
           </Box>
 
-          <Box sx={{ gap: 1, py: 3 }}>
-            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+          <Box sx={{ gap: 1, py: 3, display: 'flex', justifyContent: 'space-evenly' }}>
             <Button variant="outlined" sx={{ color: 'gray', border: '2px solid gray', fontFamily: 'poppins', '&:hover': { backgroundColor: 'gray', color: 'white'}}} onClick={onClose}>Cancel</Button>
+            <Box sx={{ display: 'flex', gap: 1, marginLeft: 'auto'}}>
+              <Button
+                onClick={handleDelete}
+                variant="solid"
+                fontWeight={500}
+                fontSize={20}
+                sx={{
+                  py: 2,
+                  px: 4,
+                  fontFamily: 'poppins',
+                  backgroundColor: '#F15C5C',
+                  '&:hover': { backgroundColor: '#e64545',  },
+                }}
+              >
+                Hapus
+              </Button>
               <Button
                 type="submit"
                 variant="solid"
@@ -247,7 +238,7 @@ export default function FormSiswa({ isOpen, onClose, refreshStudents }) {
                   '&:hover': { backgroundColor: '#12B104' },
                 }}
               >
-                Submit
+                Edit
               </Button>
             </Box>
           </Box>
